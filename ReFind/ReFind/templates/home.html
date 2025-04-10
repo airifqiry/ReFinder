@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReFinder – Начало</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+ <link rel="stylesheet" href="home.css"
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <img src="logo-removebg-preview.png" alt="ReFinder Logo">
+      <span>refinder</span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Начало</a>
+      <a href="add-lost.html">Добави</a>
+      <a href="search.html">Търси</a>
+      <a href="login.html">Вход</a>
+      <a href="register.html">Регистрация</a>
+    </div>
+  </nav>
+
+  <header>
+    <h1 data-aos="fade-up">Изгубено? Намери го с ReFinder.</h1>
+    <p data-aos="fade-up" data-aos-delay="100">Платформа, която използва локация, AI и QR кодове, за да събира изгубени и намерени вещи.</p>
+  </header>
+
+  <div class="searchbar" data-aos="fade-up" data-aos-delay="200">
+    <input type="text" id="search" placeholder="🔍 Потърси вещ по име или описание...">
+  </div>
+
+  <div class="buttons" data-aos="fade-up" data-aos-delay="300">
+    <button onclick="location.href='search.html'">🔍 Търси вещ</button>
+    <button onclick="location.href='add-lost.html'">➕ Добави обява</button>
+  </div>
+
+  <div id="map" data-aos="zoom-in"></div>
+
+  <section class="features">
+    <div class="card" data-aos="fade-right">
+      <h3>AI Сравнение</h3>
+      <p>Снимай изгубената вещ и AI ще търси визуално съвпадение.</p>
+    </div>
+    <div class="card" data-aos="fade-up">
+      <h3>Карта в реално време</h3>
+      <p>Прегледай къде е намерена или изгубена дадена вещ около теб.</p>
+    </div>
+    <div class="card" data-aos="fade-left">
+      <h3>QR Връзка</h3>
+      <p>Сканирай вещта и сигнализирай собственика – бързо и дискретно.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 ReFinder. Всички права запазени.
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="home.js"></script>
+  
+</body>
+</html>
