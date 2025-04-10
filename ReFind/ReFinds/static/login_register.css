@@ -42,7 +42,17 @@
   form {
     display: flex;
     flex-direction: column;
+    align-items: center; /* центрира по хоризонтала */
+    justify-content: center;
   }
+  
+  form input,
+  form button {
+    width: 100%;
+    max-width: 300px;
+    text-align: left; /* ако искаш текстът в полетата да е вляво */
+  }
+  
   
   input {
     padding: 12px 16px;

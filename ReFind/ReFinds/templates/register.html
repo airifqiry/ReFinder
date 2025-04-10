@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReFinder – Регистрация</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'login_register.css' %}">
+</head>
+<body>
+  <div class="container">
+    {% if messages %}
+  {% for message in messages %}
+    <div class="success">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+    <h2>Регистрация</h2>
+    
+    <form method="post">
+      {% csrf_token %}
+    
+      {% if messages %}
+        {% for message in messages %}
+          <div class="success">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    
+      {% if form.errors %}
+        <ul class="form-errors">
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    
+      <!-- Ръчно рендерираме всяко поле: -->
+      <div>
+      
+        {{ form.first_name }}
+      </div>
+      <div>
+        
+        {{ form.last_name }}
+      </div>
+      <div>
+        
+        {{ form.username }}
+      </div>
+      <div>
+      
+        {{ form.email }}
+      </div>
+      <div>
+        
+        {{ form.password1 }}
+      </div>
+      <div>
+
+        {{ form.password2 }}
+      </div>
+    
+      <button type="submit">Регистрирай се</button>
+    </form>
+    
+      
+    
+    <div class="toggle">
+      <span>Вече имаш акаунт? <a href="{% url 'login' %}">Влез тук</a></span>
+    </div>
+  </div>
+</body>
+</html>

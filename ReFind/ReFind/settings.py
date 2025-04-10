@@ -55,7 +55,7 @@ ROOT_URLCONF = 'ReFind.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'ReFinds/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
