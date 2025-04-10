@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
@@ -7,13 +8,13 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
- <link rel="stylesheet" href="home.css"
+  <link rel="stylesheet" href="{% static 'home.css' %}">
 </head>
 <body>
 
   <nav>
     <div class="logo">
-      <img src="logo-removebg-preview.png" alt="ReFinder Logo">
+      <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo">
       <span>refinder</span>
     </div>
     <div class="nav-links">
@@ -62,7 +63,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="home.js"></script>
+  <script src="{% static 'home.js' %}"></script>
   
 </body>
 </html>
