@@ -21,3 +21,15 @@ class RegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Този имейл вече е регистриран.")
         return email
+
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Потребителско име', max_length=150, widget=forms.TextInput(attrs={
+        'placeholder': 'Потребителско име',
+        'class': 'form-control'
+    }))
+    password = forms.CharField(label='Парола', widget=forms.PasswordInput(attrs={
+        'placeholder': 'Парола',
+        'class': 'form-control'
+    }))
