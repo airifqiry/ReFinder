@@ -1,10 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Item
 
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(
@@ -48,3 +46,13 @@ class LoginForm(forms.Form):
         'placeholder': 'Парола',
         'class': 'form-control'
     }))
+
+
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model=Item
+        fields = ['title', 'description', 'status', 'category', 'image', 'location_lat', 'location_lng']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
