@@ -1,9 +1,10 @@
 
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import login,authenticate,logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import LoginForm
+from .forms import LoginForm,ItemForm
 
 def index_view(request):
     return render(request,'index.html')
@@ -11,8 +12,10 @@ def index_view(request):
 
 def home_view(request):
     return render(request, 'home.html')
-
-
+@login_required 
+def user_logout(request):
+    logout(request)
+    return redirect('index')
 
 
 def register_view(request):
@@ -45,3 +48,18 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form})
+
+
+@login_required
+def add_item(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.user = request.user
+            item.save()
+            return redirect('index.html')  # или към страница със списък на обявите
+    else:
+        form = ItemForm()
+    
+    return render(request, 'add_lost.html', {'form': form})
