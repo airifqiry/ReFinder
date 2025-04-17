@@ -12,18 +12,22 @@
 </head>
 <body>
 
-  <nav>
-    <div class="logo">
-      <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo">
-      <span>refinder</span>
-    </div>
-    <div class="nav-links">
-      <a href="#">Начало</a>
-      <a href="{% url 'add_lost' %}">Добави</a>
-      <a href="search.html">Търси</a>
-      <a href="{% url 'index' %}">Изход</a>
-    </div>
-  </nav>
+
+<!-- Само навигационната част -->
+<nav>
+  <div class="logo">
+    <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo">
+    <span>refinder</span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Начало</a>
+    <a href="{% url 'listing' %}">Добави</a>
+    <a href="search.html">Търси</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}">Изход</a>
+    {% endif %}
+  </div>
+</nav>
 
   <header>
     <h1 data-aos="fade-up">Изгубено? Намери го с ReFinder.</h1>
