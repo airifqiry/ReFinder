@@ -3,11 +3,8 @@ AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
   console.log("📦 DOM напълно зареден");
 
-  document.getElementById('search').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      window.location.href = 'search.html?query=' + encodeURIComponent(this.value);
-    }
-  });
+
+
 
   // КАРТАТА
   const map = L.map('map').setView([42.6977, 23.3219], 13);

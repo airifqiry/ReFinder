@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Добави обява</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'listing.css' %}">
+   
+  
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <form method="POST" enctype="multipart/form-data" class="backdrop-blur-md bg-[#0C6478]/80 p-8 rounded-2xl shadow-2xl w-full max-w-2xl space-y-6 text-white">
+    <h2 class="text-3xl font-bold text-center text-[#80EE98] drop-shadow">Добави обява</h2>
+
+    <!-- Снимка -->
+    <div>
+      <label class="block mb-1 text-[#46DFB1] font-semibold">Снимка</label>
+      <input type="file" name="image" accept="image/*" class="w-full p-3 rounded-xl bg-[#15919B] text-white file:bg-[#213A58] file:text-white file:border-0 file:py-1 file:px-3">
+    </div>
+
+    <!-- Заглавие -->
+    <div>
+      <label class="block mb-1 text-[#46DFB1] font-semibold">Заглавие</label>
+      <input type="text" name="title" required maxlength="100"
+             class="w-full p-3 rounded-xl bg-[#15919B] text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#80EE98]" placeholder="Напиши заглавие">
+    </div>
+
+    <!-- Описание -->
+    <div>
+      <label class="block mb-1 text-[#46DFB1] font-semibold">Описание (до 50 думи)</label>
+      <textarea name="description" required maxlength="300"
+                oninput="countWords(this)"
+                class="w-full p-3 rounded-xl bg-[#15919B] text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#80EE98]"
+                placeholder="Въведи кратко описание..."></textarea>
+      <p id="wordCount" class="text-sm text-right mt-1 text-[#80EE98]">0/50 думи</p>
+    </div>
+
+    <!-- Локация -->
+    <div>
+      <label class="block mb-1 text-[#46DFB1] font-semibold">Локация <span class="text-sm text-gray-300">(по избор)</span></label>
+      <div class="flex gap-2">
+        <input type="text" name="location" id="locationField" placeholder="Въведи локация или използвай текуща"
+               class="w-full p-3 rounded-xl bg-[#15919B] text-white focus:outline-none">
+        <button type="button" onclick="fillLocation()"
+                class="bg-[#80EE98] text-[#213A58] font-bold px-4 rounded-xl hover:bg-[#46DFB1] transition-all">
+          📍
+        </button>
+      </div>
+    </div>
+
+    <!-- Бутон -->
+    <div class="text-center">
+      <button type="submit"
+              class="bg-[#80EE98] text-[#213A58] font-bold px-8 py-3 rounded-xl hover:bg-[#46DFB1] transition-all shadow-lg">
+        Публикувай
+      </button>
+    </div>
+  </form>
+
+  <script src="{% static 'listing.js' %}"></script>
+</body>
+</html>
