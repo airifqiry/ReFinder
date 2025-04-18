@@ -51,3 +51,18 @@ document.addEventListener("DOMContentLoaded", function () {
     alert("❗ Браузърът не поддържа геолокация.");
   }
 });
+
+
+  fetch('/ads-json/')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(ad => {
+        const marker = L.marker([ad.latitude, ad.longitude]).addTo(map);
+        marker.bindPopup(`
+          <b>${ad.title}</b><br>
+          ${ad.description}<br>
+          ${ad.image ? `<img src="${ad.image}" width="100">` : ''}
+        `);
+      });
+    });
+

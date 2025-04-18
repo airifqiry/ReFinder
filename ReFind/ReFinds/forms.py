@@ -56,3 +56,21 @@ class ItemForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }
+
+
+class AdForm(forms.ModelForm):
+    class Meta:
+        model = Ad
+        fields = ['image', 'title', 'description', 'location', 'latitude', 'longitude']
+
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if description and len(description.split()) > 50:
+            raise forms.ValidationError("Описанието не трябва да надвишава 50 думи.")
+        return description
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image and image.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("Снимката трябва да е под 5MB.")
+        return image

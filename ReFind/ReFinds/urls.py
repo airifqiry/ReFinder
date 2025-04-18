@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('listing/', views.listing_view, name='listing'),
+    path('ads-json/', views.ad_list_json, name='ads_json'),
 
 ]
 

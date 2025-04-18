@@ -4,6 +4,10 @@ from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm,ItemForm
+from .forms import AdForm
+from .models import Ad
+from django.http import JsonResponse
+
 
 def index_view(request):
     return render(request,'index.html')
@@ -63,7 +67,29 @@ def add_item(request):
     
     return render(request, 'listing.html', {'form': form})
 
-def listing_view(request):
-   return render(request, 'listing.html')# <-- Това трябва да има отстъп (4 space-а или Tab)
-    
+
+
+def add_ad(request):
+    if request.method == 'POST':
+        form = AdForm(request.POST, request.FILES)
+        if form.is_valid():
+            ad = form.save()
+            messages.success(request, "Обявата беше добавена успешно!")
+            return redirect('home')
+    else:
+        form = AdForm()
+    return render(request, 'listing.html', {'form': form})
+
+
+
+def ad_list_json(request):
+    ads = Ad.objects.all()
+    data = [{
+        'title': ad.title,
+        'description': ad.description,
+        'latitude': ad.latitude,
+        'longitude': ad.longitude,
+        'image': ad.image.url if ad.image else '',
+    } for ad in ads if ad.latitude and ad.longitude]
+    return JsonResponse(data, safe=False)
 

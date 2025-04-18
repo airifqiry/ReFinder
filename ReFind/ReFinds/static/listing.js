@@ -17,4 +17,14 @@ function countWords(textarea) {
       });
     }
   }
+  function fillLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const coords = `${pos.coords.latitude},${pos.coords.longitude}`;
+        document.getElementById("locationField").value = coords;
+        document.getElementById("id_latitude").value = pos.coords.latitude;
+        document.getElementById("id_longitude").value = pos.coords.longitude;
+      });
+    }
+  }
   
