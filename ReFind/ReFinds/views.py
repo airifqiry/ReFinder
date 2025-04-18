@@ -61,4 +61,9 @@ def add_item(request):
     else:
         form = ItemForm()
     
-    return render(request, 'add_lost.html', {'form': form})
+    return render(request, 'listing.html', {'form': form})
+
+def listing_view(request):
+   return render(request, 'listing.html')# <-- Това трябва да има отстъп (4 space-а или Tab)
+    
+
