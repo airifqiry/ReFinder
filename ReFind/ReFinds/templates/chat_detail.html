@@ -5,35 +5,58 @@
   <meta charset="UTF-8">
   <title>Чат – ReFinder</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .chat-bubble {
+      max-width: 70%;
+    }
+  </style>
 </head>
 <body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
-  <div class="bg-[#0C6478] p-4 shadow-md">
+  <!-- Навигация / Заглавие -->
+  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center">
     <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ other_user.username }}</h1>
+    <a href="{% url 'chat_list' %}" class="text-sm text-white hover:text-[#80EE98]">← Назад</a>
+  </header>
 
-  </div>
+  <!-- Съобщения -->
+  <div id="chat-box" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#1b2c48]">
 
-  <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
     {% for msg in messages %}
-      <div class="{% if msg.sender == request.user %}text-right{% else %}text-left{% endif %}">
-        <div class="inline-block bg-[#15919B] px-4 py-2 rounded-xl shadow">
-          <p class="text-sm">{{ msg.text }}</p>
-          <p class="text-xs text-gray-300 mt-1">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
+      <div class="flex {% if msg.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+        <div class="chat-bubble px-4 py-2 rounded-2xl shadow
+          {% if msg.sender == request.user %}
+            bg-[#80EE98] text-[#213A58] rounded-br-none
+          {% else %}
+            bg-[#0C6478] text-white rounded-bl-none
+          {% endif %}
+        ">
+          <p class="text-sm break-words">{{ msg.text }}</p>
+          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
         </div>
       </div>
     {% empty %}
       <p class="text-center text-gray-400">Няма съобщения.</p>
     {% endfor %}
+
   </div>
 
+  <!-- Форма за съобщение -->
   <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-2">
     {% csrf_token %}
     <input type="text" name="text" placeholder="Напиши съобщение..." required
-           class="flex-1 px-4 py-2 rounded-xl text-[#213A58]">
-    <button type="submit" class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1]">
-      Изпрати
+           class="flex-1 px-4 py-2 rounded-xl text-[#213A58] focus:outline-none focus:ring-2 focus:ring-[#80EE98]">
+    <button type="submit"
+            class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1] transition">
+      📤
     </button>
   </form>
+
+  <!-- Автоскрол до дъното -->
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  </script>
 
 </body>
 </html>

@@ -6,23 +6,50 @@
   <title>Чатове – ReFinder</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#213A58] text-white min-h-screen p-6">
+<body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
-  <h1 class="text-2xl font-bold text-[#80EE98] mb-6">💬 Моите чатове</h1>
+  <!-- Навигация -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-[#0C6478] shadow-md">
+    <div class="flex items-center gap-2">
+      <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo" class="h-10">
+      <span class="text-xl font-bold text-[#80EE98]">ReFinder</span>
+    </div>
+    <div class="space-x-4 text-sm font-semibold">
+      <a href="{% url 'home' %}" class="hover:text-[#80EE98]">Начало</a>
+      <a href="{% url 'chat_list' %}" class="hover:text-[#80EE98]">Чатове</a>
+      <a href="{% url 'listing' %}" class="hover:text-[#80EE98]">Добави</a>
+      <a href="{% url 'ad_list' %}" class="hover:text-[#80EE98]">Обяви</a>
+      <a href="#" class="hover:text-[#80EE98]" >Сравнение</a>
+      <a href="{% url 'logout' %}" class="hover:text-[#80EE98]">Изход</a>
+      
+        
+    </div>
+  </nav>
 
-  <ul class="space-y-4">
-    {% for item in chat_data %}
-      <li>
-        <a href="{% url 'chat_detail' item.chat.id %}" class="block bg-[#0C6478]/80 p-4 rounded-xl hover:bg-[#15919B]/80 transition-all">
-          📩 Разговор с <strong>{{ item.other_user.username }}</strong>
-          <span class="block text-sm text-gray-300 mt-1">Създаден на {{ item.chat.created_at|date:"d.m.Y H:i" }}</span>
-        </a>
-      </li>
-    {% empty %}
-      <li class="text-gray-400">Нямаш активни разговори.</li>
-    {% endfor %}
-  </ul>
-  
+  <!-- Заглавие -->
+  <div class="px-6 py-6">
+    <h1 class="text-3xl font-bold text-[#80EE98] mb-6 drop-shadow">💬 Моите чатове</h1>
+
+    {% if chat_data %}
+      <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in chat_data %}
+          <li>
+            <a href="{% url 'chat_detail' item.chat.id %}" class="block bg-[#0C6478]/80 hover:bg-[#15919B]/80 transition-all p-5 rounded-2xl shadow-lg border border-transparent hover:border-[#80EE98]">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-lg font-semibold text-[#80EE98] flex items-center gap-2">
+                  💌 <span>С <strong>{{ item.other_user.username }}</strong></span>
+                </div>
+                <span class="text-xs text-gray-300">{{ item.chat.created_at|date:"d.m.Y H:i" }}</span>
+              </div>
+              <p class="text-sm text-gray-300">Натисни, за да отвориш разговора</p>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-300 text-lg italic">Нямаш активни разговори. 🤷‍♂️</p>
+    {% endif %}
+  </div>
 
 </body>
 </html>
