@@ -2,11 +2,15 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import LoginForm,RegisterForm,AdForm
+from .forms import LoginForm,RegisterForm,AdForm,ImageSearchForm
 from .models import Ad,Chat,Message
 from django.http import JsonResponse
-import requests
+import requests,replicate
 from django.contrib.auth.models import User
+import numpy as np
+from django.core.files.storage import default_storage
+import json
+
 
 
 
@@ -200,3 +204,50 @@ def chat_list(request):
 
     return render(request, 'chat_list.html', {'chat_data': chat_data})
 
+
+
+
+
+def cosine_similarity(v1, v2):
+    v1, v2 = np.array(v1), np.array(v2)
+    return float(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+
+def image_search_view(request):
+    results = []
+
+    if request.method == 'POST':
+        form = ImageSearchForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                image_file = request.FILES['image']
+                model = replicate.models.get("laion-ai/clip-vit-b-32")
+                uploaded_embedding = model.predict(image=image_file, input_type="image")
+
+                scored_ads = []
+                for ad in Ad.objects.all():
+                    try:
+                        if not ad.embedding:
+                            ad_embedding = model.predict(image=ad.image.file, input_type="image")
+                            ad.embedding = json.dumps(ad_embedding)
+                            ad.save()
+                        else:
+                            ad_embedding = json.loads(ad.embedding)
+
+                        score = cosine_similarity(uploaded_embedding, ad_embedding)
+                        scored_ads.append((score, ad))
+
+                    except Exception as e:
+                        print(f"⚠️ Проблем с обява ID {ad.id}: {e}")
+
+                scored_ads.sort(reverse=True, key=lambda x: x[0])
+                results = [ad for score, ad in scored_ads[:6]]
+
+            except Exception as e:
+                print(f"❌ Replicate грешка: {e}")
+    else:
+        form = ImageSearchForm()
+
+    return render(request, 'image_search.html', {
+        'form': form,
+        'results': results
+    })
