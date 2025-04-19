@@ -7,7 +7,10 @@ from .models import Ad,Chat,Message
 from django.http import JsonResponse
 import requests
 from django.contrib.auth.models import User
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+import uuid
 
 
 def index_view(request):
@@ -190,3 +193,12 @@ def chat_list(request):
 
     return render(request, 'chat_list.html', {'chat_data': chat_data})
 
+
+@csrf_exempt
+def upload_image(request):
+    if request.method == "POST" and request.FILES.get("image"):
+        image = request.FILES["image"]
+        filename = f"{uuid.uuid4()}.{image.name.split('.')[-1]}"
+        path = default_storage.save(f"chat_images/{filename}", image)
+        return JsonResponse({"url": f"{settings.MEDIA_URL}{path}"})
+    return JsonResponse({"error": "Невалидна заявка"}, status=400)

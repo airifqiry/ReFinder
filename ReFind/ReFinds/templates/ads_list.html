@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{% static 'listing.css' %}">
 </head>
-<body class="bg-[#213A58] text-white min-h-screen">
+<body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
   <!-- Навигация -->
   <nav class="flex justify-between items-center px-6 py-4 bg-[#0C6478] shadow-md">
@@ -23,16 +23,28 @@
     </div>
   </nav>
 
-  <!-- Заглавие -->
-  <h1 class="text-3xl font-bold text-center text-[#80EE98] mt-6 mb-4 drop-shadow">📋 Всички обяви</h1>
+  <!-- Заглавие и търсене -->
+  <div class="px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <h1 class="text-3xl font-bold text-[#80EE98] drop-shadow">📋 Всички обяви</h1>
+
+    <form method="GET" class="flex gap-2">
+      <input type="text" name="q" placeholder="🔍 Търси по заглавие..." class="px-4 py-2 rounded-xl bg-white text-black placeholder-gray-500 w-64">
+      <select name="status" class="px-3 py-2 rounded-xl bg-white text-black">
+        <option value="">Всички</option>
+        <option value="lost">Изгубени</option>
+        <option value="found">Намерени</option>
+      </select>
+      <button type="submit" class="bg-[#80EE98] text-[#213A58] px-4 py-2 rounded-xl font-bold hover:bg-[#5ee180] transition">Филтрирай</button>
+    </form>
+  </div>
 
   <!-- Списък с обяви -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 overflow-y-auto max-h-[75vh] pb-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-10 overflow-y-auto">
     {% for ad in ads %}
-      <a href="{% url 'ad_detail' ad.id %}" class="block bg-[#0C6478]/80 backdrop-blur-md p-4 rounded-2xl shadow-lg hover:shadow-2xl hover:bg-[#15919B]/80 transition-all">
+      <a href="{% url 'ad_detail' ad.id %}" class="block bg-[#0C6478]/80 backdrop-blur-md p-4 rounded-2xl shadow-xl hover:shadow-2xl hover:bg-[#15919B]/80 transition-all duration-300 border border-transparent hover:border-[#80EE98]">
 
         <!-- Статус и потребител -->
-        <div class="flex justify-between items-center text-xs text-gray-400 mb-2">
+        <div class="flex justify-between items-center text-xs text-gray-300 mb-2">
           <span>
             {% if ad.status == 'lost' %}
               🛑 <span class="text-red-400 font-semibold">Изгубено</span>
@@ -42,24 +54,20 @@
               📦 Неизвестно
             {% endif %}
           </span>
-          {% if ad.user %}
-            <span>👤 {{ ad.user.username }}</span>
-          {% else %}
-            <span class="italic">👤 неизвестен</span>
-          {% endif %}
+          <span>👤 {{ ad.user.username|default:"неизвестен" }}</span>
         </div>
 
         {% if ad.image %}
-          <img src="{{ ad.image.url }}" alt="Ad Image" class="w-full h-48 object-cover rounded-xl mb-4">
+          <img src="{{ ad.image.url }}" alt="Ad Image" class="w-full h-48 object-cover rounded-xl mb-4 shadow-sm">
         {% endif %}
 
-        <h2 class="text-xl font-semibold text-[#80EE98]">{{ ad.title }}</h2>
-        <p class="text-sm text-gray-300 line-clamp-3">{{ ad.description }}</p>
+        <h2 class="text-xl font-bold text-[#80EE98]">{{ ad.title }}</h2>
+        <p class="text-sm text-gray-200 line-clamp-3">{{ ad.description }}</p>
         <p class="text-sm mt-2">📍 {{ ad.location }}</p>
         <p class="text-xs text-gray-400">🕒 {{ ad.created_at|date:"d.m.Y H:i" }}</p>
       </a>
     {% empty %}
-      <p class="text-center col-span-2 text-[#80EE98]">Все още няма публикувани обяви.</p>
+      <p class="text-center col-span-3 text-[#80EE98] text-lg font-semibold">Все още няма публикувани обяви.</p>
     {% endfor %}
   </div>
 

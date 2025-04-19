@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
-
+from django.conf import settings
+from django.conf.urls.static import static
+from ReFinds import views as chat_views  # или както се казва твоето app
 urlpatterns = [
     path('', views.index_view, name='index'),
     path('home/', views.home_view, name='home'),
@@ -15,7 +17,10 @@ urlpatterns = [
     path('chat/start/<int:user_id>/', views.start_chat, name='start_chat'),
     path('chat/send/<int:chat_id>/', views.send_message, name='send_message'),
     path('chat/', views.chat_list, name='chat_list'),
-
+    path('upload-image/', chat_views.upload_image, name='upload_image'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

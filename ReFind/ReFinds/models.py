@@ -5,7 +5,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
 class Ad(models.Model):
     STATUS_CHOICES = [
         ('lost', 'Изгубено'),
@@ -37,11 +36,16 @@ class Chat(models.Model):
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
+    text = models.TextField(blank=True)
+    image = models.ImageField(upload_to='chat_images/', blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reactions = models.JSONField(default=dict)  # {"❤️": 2, "😂": 1}
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.sender.username}: {self.text[:30]}"
+
+
 
 
 
