@@ -28,12 +28,22 @@
     {% if ad.image %}
       <img src="{{ ad.image.url }}" alt="Ad Image" class="w-full h-64 object-cover rounded-xl mb-6">
     {% endif %}
+
     <h1 class="text-3xl font-bold text-[#80EE98] mb-2">{{ ad.title }}</h1>
     <p class="text-gray-200 mb-4">{{ ad.description }}</p>
 
-    <div class="text-sm text-gray-300 space-y-1">
+    <!-- Детайли -->
+    <div class="text-sm text-gray-300 space-y-2">
       <p>📍 <strong>Локация:</strong> {{ ad.location }}</p>
-      <p>🕒 <strong>Публикувано на:</strong> {{ ad.date_posted|date:"d.m.Y H:i" }}</p>
+      <p>🕒 <strong>Публикувано на:</strong> {{ ad.created_at|date:"d.m.Y H:i" }}</p>
+      <p>👤 <strong>Публикувано от:</strong> {{ ad.user.username }}</p>
+      <p>
+        {% if ad.status == 'lost' %}
+          🛑 <strong class="text-red-400">Изгубено</strong>
+        {% elif ad.status == 'found' %}
+          ✅ <strong class="text-green-400">Намерено</strong>
+        {% endif %}
+      </p>
     </div>
 
     <div class="mt-6">

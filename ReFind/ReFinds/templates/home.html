@@ -30,9 +30,16 @@
     <p data-aos="fade-up" data-aos-delay="100">Платформа, която използва локация, AI и QR кодове, за да събира изгубени и намерени вещи.</p>
   </header>
 
-  <div class="searchbar" data-aos="fade-up" data-aos-delay="200">
-    <input type="text" id="search" placeholder="🔍 Потърси вещ по име или описание...">
-  </div>
+  <form method="GET" action="{% url 'ad_list' %}" class="searchbar" data-aos="fade-up" data-aos-delay="200">
+    <input
+    type="text"
+    name="q"
+    placeholder="🔍 Потърси вещ по име..."
+    class="px-4 py-2 rounded-xl text-[#213A58] w-72 text-center"
+  />  
+    <button type="submit" class="search-button">Търси</button>
+  </form>
+  
 
   <div class="buttons" data-aos="fade-up" data-aos-delay="300">
     <button onclick="location.href='{% url 'ad_list' %}'">🔍 Търси вещ</button>

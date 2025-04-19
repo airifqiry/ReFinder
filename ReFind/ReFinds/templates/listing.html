@@ -7,17 +7,16 @@
   <title>Добави обява</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{% static 'listing.css' %}">
-   
-  
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
-    {% if messages %}
-  {% for message in messages %}
-    <div class="bg-[#80EE98] text-[#213A58] p-4 rounded-xl text-center font-bold shadow-lg mb-6">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="bg-[#80EE98] text-[#213A58] p-4 rounded-xl text-center font-bold shadow-lg mb-6">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
 
   <form method="POST" enctype="multipart/form-data" class="backdrop-blur-md bg-[#0C6478]/80 p-8 rounded-2xl shadow-2xl w-full max-w-2xl space-y-6 text-white">
     {% csrf_token %}
@@ -34,7 +33,8 @@
     <div>
       <label class="block mb-1 text-[#46DFB1] font-semibold">Заглавие</label>
       <input type="text" name="title" required maxlength="100"
-             class="w-full p-3 rounded-xl bg-[#15919B] text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#80EE98]" placeholder="Напиши заглавие">
+             class="w-full p-3 rounded-xl bg-[#15919B] text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#80EE98]"
+             placeholder="Напиши заглавие">
     </div>
 
     <!-- Описание -->
@@ -45,6 +45,16 @@
                 class="w-full p-3 rounded-xl bg-[#15919B] text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#80EE98]"
                 placeholder="Въведи кратко описание..."></textarea>
       <p id="wordCount" class="text-sm text-right mt-1 text-[#80EE98]">0/50 думи</p>
+    </div>
+
+    <!-- Статус -->
+    <div>
+      <label class="block mb-1 text-[#46DFB1] font-semibold">Статус</label>
+      <select name="status" required class="w-full p-3 rounded-xl bg-[#15919B] text-white focus:outline-none">
+        <option value="" disabled selected>Избери статус</option>
+        <option value="lost">Изгубено</option>
+        <option value="found">Намерено</option>
+      </select>
     </div>
 
     <!-- Локация -->
@@ -61,7 +71,7 @@
     </div>
 
     <input type="hidden" name="latitude" id="id_latitude">
-<input type="hidden" name="longitude" id="id_longitude">
+    <input type="hidden" name="longitude" id="id_longitude">
 
     <!-- Бутон -->
     <div class="text-center">
