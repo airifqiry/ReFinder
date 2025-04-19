@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ ad.title }} – ReFinder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'listing.css' %}">
+</head>
+<body class="bg-[#213A58] text-white min-h-screen">
+
+  <!-- Навигация -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-[#0C6478] shadow-md">
+    <div class="flex items-center gap-2">
+      <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo" class="h-10">
+      <span class="text-xl font-bold text-[#80EE98]">ReFinder</span>
+    </div>
+    <div class="space-x-4 text-sm font-semibold">
+      <a href="{% url 'home' %}" class="hover:text-[#80EE98]">Начало</a>
+      <a href="{% url 'listing' %}" class="hover:text-[#80EE98]">Добави</a>
+      <a href="{% url 'ad_list' %}" class="hover:text-[#80EE98]">Обяви</a>
+      <a href="{% url 'logout' %}" class="hover:text-[#80EE98]">Изход</a>
+    </div>
+  </nav>
+
+  <!-- Обява -->
+  <div class="max-w-3xl mx-auto mt-10 bg-[#0C6478]/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl">
+    {% if ad.image %}
+      <img src="{{ ad.image.url }}" alt="Ad Image" class="w-full h-64 object-cover rounded-xl mb-6">
+    {% endif %}
+    <h1 class="text-3xl font-bold text-[#80EE98] mb-2">{{ ad.title }}</h1>
+    <p class="text-gray-200 mb-4">{{ ad.description }}</p>
+
+    <div class="text-sm text-gray-300 space-y-1">
+      <p>📍 <strong>Локация:</strong> {{ ad.location }}</p>
+      <p>🕒 <strong>Публикувано на:</strong> {{ ad.date_posted|date:"d.m.Y H:i" }}</p>
+    </div>
+
+    <div class="mt-6">
+      <a href="{% url 'ad_list' %}" class="text-[#80EE98] underline hover:text-[#46DFB1]">⬅ Обратно към обявите</a>
+    </div>
+  </div>
+
+</body>
+</html>

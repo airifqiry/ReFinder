@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import LoginForm,ItemForm
-from .forms import AdForm
+from .forms import LoginForm,RegisterForm,AdForm
 from .models import Ad
 from django.http import JsonResponse
 
@@ -53,19 +51,15 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
-@login_required
-def add_item(request):
-    if request.method == 'POST':
-        form = ItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            item = form.save(commit=False)
-            item.user = request.user
-            item.save()
-            return redirect('index.html')  # или към страница със списък на обявите
-    else:
-        form = ItemForm()
-    
-    return render(request, 'listing.html', {'form': form})
+
+
+def ad_list_view(request):
+    ads = Ad.objects.all().order_by('-created_at')
+    return render(request, 'ads_list.html', {'ads': ads})
+
+def ad_detail_view(request, ad_id):
+    ad = get_object_or_404(Ad, id=ad_id)
+    return render(request, 'ad_detail.html', {'ad': ad})
 
 
 
@@ -74,6 +68,7 @@ def add_ad(request):
         form = AdForm(request.POST, request.FILES)
         if form.is_valid():
             ad = form.save()
+            ad.user=request.user
             messages.success(request, "Обявата беше добавена успешно!")
             return redirect('home')
     else:

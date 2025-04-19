@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Item
+from .models import Ad
 
 
 class RegisterForm(UserCreationForm):
@@ -49,19 +49,12 @@ class LoginForm(forms.Form):
 
 
 
-class ItemForm(forms.ModelForm):
-    class Meta:
-        model=Item
-        fields = ['title', 'description', 'status', 'category', 'image', 'location_lat', 'location_lng']
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
-        }
 
 
 class AdForm(forms.ModelForm):
     class Meta:
         model = Ad
-        fields = ['image', 'title', 'description', 'location', 'latitude', 'longitude']
+        fields = ['image', 'title','status', 'description', 'location', 'latitude', 'longitude']
 
     def clean_description(self):
         description = self.cleaned_data.get('description')
