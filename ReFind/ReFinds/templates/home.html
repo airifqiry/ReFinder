@@ -20,7 +20,7 @@
     <div class="nav-links">
       <a href="#">Начало</a>
       <a href="{% url 'listing' %}">Добави</a>
-      <a href="search.html">Търси</a>
+      <a href="{% url 'ad_list' %}">Търси</a>
       <a href="{% url 'index' %}">Изход</a>
     </div>
   </nav>
@@ -35,8 +35,8 @@
   </div>
 
   <div class="buttons" data-aos="fade-up" data-aos-delay="300">
-    <button onclick="location.href='search.html'">🔍 Търси вещ</button>
-    <button onclick='location.href="{% url 'listing' %}"'>➕ Добави обява</button>
+    <button onclick="location.href='{% url 'ad_list' %}'">🔍 Търси вещ</button>
+    <button onclick="location.href='{% url 'listing' %}'">➕ Добави обява</button>
 
   </div>
 

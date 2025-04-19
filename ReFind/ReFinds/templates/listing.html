@@ -20,6 +20,8 @@
 {% endif %}
 
   <form method="POST" enctype="multipart/form-data" class="backdrop-blur-md bg-[#0C6478]/80 p-8 rounded-2xl shadow-2xl w-full max-w-2xl space-y-6 text-white">
+    {% csrf_token %}
+
     <h2 class="text-3xl font-bold text-center text-[#80EE98] drop-shadow">Добави обява</h2>
 
     <!-- Снимка -->
