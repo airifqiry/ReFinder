@@ -5,205 +5,48 @@
   <meta charset="UTF-8">
   <title>Чат – ReFinder</title>
   <script src="https://cdn.tailwindcss.com"></script>
-<<<<<<< HEAD
-  <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1"></script>
   <style>
-    html { scroll-behavior: smooth; }
-    emoji-picker {
-      position: absolute;
-      bottom: 60px;
-      right: 20px;
-      z-index: 50;
-=======
-  <style>
-    .chat-bubble {
-      max-width: 70%;
->>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
+    html {
+      scroll-behavior: smooth;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-[#213A58] via-[#0C6478] to-[#09D1C7] text-white min-h-screen flex flex-col">
+<body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
-<<<<<<< HEAD
-  <!-- Header -->
-  <header class="bg-[#15919B] p-4 shadow-md flex justify-between items-center sticky top-0 z-10 rounded-b-xl">
-    <div class="flex items-center gap-3">
-      <span class="text-xl font-bold text-[#80EE98]">💬 {{ other_user.username }}</span>
-      <span id="typing" class="text-xs text-green-300 px-2 py-0.5 rounded hidden">Пише...</span>
-    </div>
-    <a href="{% url 'chat_list' %}" class="text-sm hover:text-[#80EE98]">← Назад</a>
-  </header>
-
-  <!-- Chat Messages -->
-  <div id="chat-box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-4 bg-[#0C6478]/30 backdrop-blur-sm">
-    {% for msg in messages %}
-      <div class="flex {% if msg.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
-        <div class="max-w-[80%] sm:max-w-[60%] px-5 py-3 rounded-2xl shadow-lg relative
-          {% if msg.sender == request.user %}
-            bg-gradient-to-r from-[#80EE98] to-[#46DFB1] text-[#213A58] rounded-br-sm
-          {% else %}
-            bg-[#15919B] text-white rounded-bl-sm
-          {% endif %}">
-          {% if msg.image %}
-            <img src="{{ msg.image.url }}" class="rounded-lg max-h-48 mb-2">
-          {% endif %}
-          <p class="text-sm break-words whitespace-pre-line">{{ msg.text }}</p>
-          <div class="text-xs mt-1 text-right text-white/70">{{ msg.timestamp|date:"H:i, d.m.Y" }}</div>
-          <div class="flex gap-2 mt-2 text-xl cursor-pointer">
-            <span onclick="sendReaction(msg.id , '❤️')">❤️</span>
-            <span onclick="sendReaction(msg.id , '😂')">😂</span>
-            <span onclick="sendReaction(msg.id , '🔥')">🔥</span>
-          </div>
-          <div id="reactions-{{ msg.id }}" class="text-sm text-gray-200 mt-1">
-            {% for emoji, count in msg.reactions.items %}
-              {{ emoji }} {{ count }}
-            {% endfor %}
-          </div>
-=======
   <!-- Навигация / Заглавие -->
-  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ other_user.username }}</h1>
-    <a href="{% url 'chat_list' %}" class="text-sm text-white hover:text-[#80EE98]">← Назад</a>
+  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
+    <h1 class="text-xl md:text-2xl font-bold text-[#80EE98]">💬 Разговор с {{ other_user.username }}</h1>
+    <a href="{% url 'chat_list' %}" class="text-sm md:text-base text-white hover:text-[#80EE98]">← Назад</a>
   </header>
 
   <!-- Съобщения -->
-  <div id="chat-box" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#1b2c48]">
+  <div id="chat-box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 bg-[#1b2c48] space-y-4">
 
     {% for msg in messages %}
       <div class="flex {% if msg.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
-        <div class="chat-bubble px-4 py-2 rounded-2xl shadow
+        <div class="max-w-[80%] sm:max-w-[60%] px-4 py-3 rounded-3xl shadow-md 
           {% if msg.sender == request.user %}
-            bg-[#80EE98] text-[#213A58] rounded-br-none
+            bg-[#80EE98] text-[#213A58] rounded-br-sm
           {% else %}
-            bg-[#0C6478] text-white rounded-bl-none
-          {% endif %}
-        ">
-          <p class="text-sm break-words">{{ msg.text }}</p>
-          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
->>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
+            bg-[#0C6478] text-white rounded-bl-sm
+          {% endif %}">
+          <p class="text-sm break-words whitespace-pre-line">{{ msg.text }}</p>
+          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i, d.m.Y" }}</p>
         </div>
       </div>
+    {% empty %}
+      <p class="text-center text-gray-400 italic">Няма съобщения.</p>
     {% endfor %}
 
   </div>
 
-<<<<<<< HEAD
-  <!-- Input Area -->
-  <form id="chat-form" enctype="multipart/form-data" class="p-4 bg-[#0C6478] flex flex-col sm:flex-row gap-3 items-start sm:items-center sticky bottom-0 z-10 shadow-inner">
-    {% csrf_token %}
-    <div class="flex-1 w-full relative">
-      <input id="messageInput" type="text" placeholder="Напиши съобщение..." required
-             class="w-full px-4 py-2 rounded-2xl text-[#213A58] bg-white focus:outline-none focus:ring-2 focus:ring-[#80EE98] placeholder:text-gray-400">
-      <emoji-picker id="emojiPicker" class="hidden"></emoji-picker>
-    </div>
-    <input type="file" id="imageInput" accept="image/*" class="hidden">
-    <button type="button" onclick="document.getElementById('imageInput').click()" class="text-white text-xl">🖼</button>
-    <button type="button" onclick="toggleEmojiPicker()" class="text-white text-xl">😊</button>
-    <button type="submit" class="bg-[#80EE98] px-5 py-2 rounded-2xl text-[#213A58] font-bold text-lg hover:bg-[#46DFB1] transition">📤</button>
-  </form>
-
-  <!-- Scripts -->
-  <script>
-    const chatID = "{{ chat.id }}";
-    const username = "{{ request.user.username }}";
-    const userID = "{{ request.user.id }}";
-    const chatBox = document.getElementById("chat-box");
-    const form = document.getElementById("chat-form");
-    const messageInput = document.getElementById("messageInput");
-    const imageInput = document.getElementById("imageInput");
-    const emojiPicker = document.getElementById("emojiPicker");
-
-    const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatID}/`);
-
-    socket.onmessage = function (e) {
-      const data = JSON.parse(e.data);
-      if (data.type === "typing") {
-        document.getElementById("typing").classList.remove("hidden");
-        setTimeout(() => document.getElementById("typing").classList.add("hidden"), 2000);
-      }
-      if (data.type === "message") {
-        const div = document.createElement("div");
-        div.className = "flex " + (data.sender === username ? "justify-end" : "justify-start");
-        div.innerHTML = `
-          <div class="max-w-[80%] sm:max-w-[60%] px-5 py-3 rounded-2xl shadow-lg relative ${
-            data.sender === username
-              ? 'bg-gradient-to-r from-[#80EE98] to-[#46DFB1] text-[#213A58] rounded-br-sm'
-              : 'bg-[#15919B] text-white rounded-bl-sm'
-          }">
-            ${data.image ? `<img src="${data.image}" class="rounded-lg max-h-48 mb-2">` : ""}
-            <p class="text-sm break-words whitespace-pre-line">${data.message}</p>
-            <div class="text-xs mt-1 text-right text-white/70">${data.timestamp}</div>
-            <div class="flex gap-2 mt-2 text-xl cursor-pointer">
-              <span onclick="sendReaction(${data.msg_id}, '❤️')">❤️</span>
-              <span onclick="sendReaction(${data.msg_id}, '😂')">😂</span>
-              <span onclick="sendReaction(${data.msg_id}, '🔥')">🔥</span>
-            </div>
-            <div id="reactions-${data.msg_id}" class="text-sm text-gray-200 mt-1"></div>
-          </div>`;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-      if (data.type === "reaction") {
-        const box = document.getElementById("reactions-" + data.message_id);
-        if (box) {
-          box.innerHTML += ` ${data.reaction}`;
-        }
-      }
-    };
-
-    messageInput.addEventListener("input", () => {
-      socket.send(JSON.stringify({ type: "typing" }));
-    });
-
-    form.onsubmit = async function (e) {
-      e.preventDefault();
-      const text = messageInput.value.trim();
-      const file = imageInput.files[0];
-
-      let image_url = "";
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        const res = await fetch("{% url 'upload_image' %}", {
-          method: "POST",
-          headers: { "X-CSRFToken": "{{ csrf_token }}" },
-          body: formData,
-        });
-        const data = await res.json();
-        image_url = data.url;
-      }
-
-      socket.send(JSON.stringify({ type: "message", message: text, image: image_url }));
-      messageInput.value = "";
-      imageInput.value = "";
-    };
-
-    function sendReaction(msgID, reaction) {
-      socket.send(JSON.stringify({
-      type: "reaction",
-      message_id: msgID,
-      reaction: reaction
-    }));
-}
-
-
-    function toggleEmojiPicker() {
-      emojiPicker.classList.toggle("hidden");
-    }
-
-    emojiPicker.addEventListener('emoji-click', e => {
-      messageInput.value += e.detail.unicode;
-    });
-
-    window.onload = () => chatBox.scrollTop = chatBox.scrollHeight;
-=======
   <!-- Форма за съобщение -->
-  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-2">
+  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-3 items-center sticky bottom-0 z-10">
     {% csrf_token %}
     <input type="text" name="text" placeholder="Напиши съобщение..." required
-           class="flex-1 px-4 py-2 rounded-xl text-[#213A58] focus:outline-none focus:ring-2 focus:ring-[#80EE98]">
+           class="flex-1 px-4 py-2 rounded-2xl text-[#213A58] bg-white focus:outline-none focus:ring-2 focus:ring-[#80EE98] placeholder:text-gray-400">
     <button type="submit"
-            class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1] transition">
+            class="bg-[#80EE98] px-5 py-2 rounded-2xl text-[#213A58] font-bold text-lg hover:bg-[#46DFB1] transition-all duration-200">
       📤
     </button>
   </form>
@@ -212,7 +55,6 @@
   <script>
     const chatBox = document.getElementById("chat-box");
     chatBox.scrollTop = chatBox.scrollHeight;
->>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
   </script>
 
 </body>
