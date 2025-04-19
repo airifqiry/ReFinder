@@ -147,6 +147,7 @@ def start_chat(request, user_id):
 
     return redirect('chat_detail', chat_id=chat.id)
 
+
 @login_required
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
@@ -155,7 +156,14 @@ def chat_detail(request, chat_id):
         return redirect('home')  # защита
 
     messages = Message.objects.filter(chat=chat).order_by('timestamp')
-    return render(request, 'chat_detail.html', {'chat': chat, 'messages': messages})
+    other_user = chat.participants.exclude(id=request.user.id).first()
+
+    return render(request, 'chat_detail.html', {
+        'chat': chat,
+        'messages': messages,
+        'other_user': other_user  # 👈 подаваме другия участник
+    })
+
 
 @login_required
 def send_message(request, chat_id):
