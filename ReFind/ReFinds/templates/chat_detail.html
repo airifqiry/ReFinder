@@ -9,7 +9,8 @@
 <body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
   <div class="bg-[#0C6478] p-4 shadow-md">
-    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ chat.participants.exclude(id=request.user.id).first.username }}</h1>
+    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ other_user.username }}</h1>
+
   </div>
 
   <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
