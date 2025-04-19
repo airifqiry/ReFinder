@@ -167,7 +167,18 @@ def send_message(request, chat_id):
     return redirect('chat_detail', chat_id=chat_id)
 
 
+
 @login_required
 def chat_list(request):
     chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
-    return render(request, 'chat_list.html', {'chats': chats})
+    chat_data = []
+
+    for chat in chats:
+        other_user = chat.participants.exclude(id=request.user.id).first()
+        chat_data.append({
+            'chat': chat,
+            'other_user': other_user
+        })
+
+    return render(request, 'chat_list.html', {'chat_data': chat_data})
+

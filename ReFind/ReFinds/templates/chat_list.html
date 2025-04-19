@@ -11,19 +11,18 @@
   <h1 class="text-2xl font-bold text-[#80EE98] mb-6">💬 Моите чатове</h1>
 
   <ul class="space-y-4">
-    {% for chat in chats %}
-      {% with other=chat.participants.exclude(id=request.user.id).first %}
-        <li>
-          <a href="{% url 'chat_detail' chat.id %}" class="block bg-[#0C6478]/80 p-4 rounded-xl hover:bg-[#15919B]/80 transition-all">
-            📩 Разговор с <strong>{{ other.username }}</strong>
-            <span class="block text-sm text-gray-300 mt-1">Създаден на {{ chat.created_at|date:"d.m.Y H:i" }}</span>
-          </a>
-        </li>
-      {% endwith %}
+    {% for item in chat_data %}
+      <li>
+        <a href="{% url 'chat_detail' item.chat.id %}" class="block bg-[#0C6478]/80 p-4 rounded-xl hover:bg-[#15919B]/80 transition-all">
+          📩 Разговор с <strong>{{ item.other_user.username }}</strong>
+          <span class="block text-sm text-gray-300 mt-1">Създаден на {{ item.chat.created_at|date:"d.m.Y H:i" }}</span>
+        </a>
+      </li>
     {% empty %}
       <li class="text-gray-400">Нямаш активни разговори.</li>
     {% endfor %}
   </ul>
+  
 
 </body>
 </html>
