@@ -45,6 +45,15 @@
         {% endif %}
       </p>
     </div>
+    {% if request.user != ad.user %}
+  <div class="mt-6">
+    <a href="{% url 'start_chat' ad.user.id %}" 
+       class="inline-block bg-[#80EE98] text-[#213A58] font-bold px-6 py-2 rounded-xl hover:bg-[#46DFB1] transition-all">
+      💬 Свържи се
+    </a>
+  </div>
+{% endif %}
+
 
     <div class="mt-6">
       <a href="{% url 'ad_list' %}" class="text-[#80EE98] underline hover:text-[#46DFB1]">⬅ Обратно към обявите</a>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Чат – ReFinder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#213A58] text-white min-h-screen flex flex-col">
+
+  <div class="bg-[#0C6478] p-4 shadow-md">
+    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ chat.participants.exclude(id=request.user.id).first.username }}</h1>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+    {% for msg in messages %}
+      <div class="{% if msg.sender == request.user %}text-right{% else %}text-left{% endif %}">
+        <div class="inline-block bg-[#15919B] px-4 py-2 rounded-xl shadow">
+          <p class="text-sm">{{ msg.text }}</p>
+          <p class="text-xs text-gray-300 mt-1">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-400">Няма съобщения.</p>
+    {% endfor %}
+  </div>
+
+  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-2">
+    {% csrf_token %}
+    <input type="text" name="text" placeholder="Напиши съобщение..." required
+           class="flex-1 px-4 py-2 rounded-xl text-[#213A58]">
+    <button type="submit" class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1]">
+      Изпрати
+    </button>
+  </form>
+
+</body>
+</html>

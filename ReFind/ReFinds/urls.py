@@ -11,4 +11,11 @@ urlpatterns = [
     path('ads-json/', views.ad_list_json, name='ads_json'),
     path('ads/', views.ad_list_view, name='ad_list'),
     path('ads/<int:ad_id>/', views.ad_detail_view, name='ad_detail'),
+    path('chat/<int:chat_id>/', views.chat_detail, name='chat_detail'),
+    path('chat/start/<int:user_id>/', views.start_chat, name='start_chat'),
+    path('chat/send/<int:chat_id>/', views.send_message, name='send_message'),
+    path('chat/', views.chat_list, name='chat_list'),
+
 ]
+
+

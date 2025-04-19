@@ -3,9 +3,11 @@ from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm,RegisterForm,AdForm
-from .models import Ad
+from .models import Ad,Chat,Message
 from django.http import JsonResponse
 import requests
+from django.contrib.auth.models import User
+
 
 
 def index_view(request):
@@ -134,3 +136,38 @@ def get_location_name(lat, lng):
         return ''
 
 
+@login_required
+def start_chat(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
+    if not chat:
+        chat = Chat.objects.create()
+        chat.participants.add(request.user, other_user)
+
+    return redirect('chat_detail', chat_id=chat.id)
+
+@login_required
+def chat_detail(request, chat_id):
+    chat = get_object_or_404(Chat, id=chat_id)
+
+    if request.user not in chat.participants.all():
+        return redirect('home')  # защита
+
+    messages = Message.objects.filter(chat=chat).order_by('timestamp')
+    return render(request, 'chat_detail.html', {'chat': chat, 'messages': messages})
+
+@login_required
+def send_message(request, chat_id):
+    if request.method == 'POST':
+        chat = get_object_or_404(Chat, id=chat_id)
+        text = request.POST.get('text')
+        if text:
+            Message.objects.create(chat=chat, sender=request.user, text=text)
+    return redirect('chat_detail', chat_id=chat_id)
+
+
+@login_required
+def chat_list(request):
+    chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
+    return render(request, 'chat_list.html', {'chats': chats})

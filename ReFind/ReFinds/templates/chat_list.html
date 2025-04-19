@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Чатове – ReFinder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#213A58] text-white min-h-screen p-6">
+
+  <h1 class="text-2xl font-bold text-[#80EE98] mb-6">💬 Моите чатове</h1>
+
+  <ul class="space-y-4">
+    {% for chat in chats %}
+      {% with other=chat.participants.exclude(id=request.user.id).first %}
+        <li>
+          <a href="{% url 'chat_detail' chat.id %}" class="block bg-[#0C6478]/80 p-4 rounded-xl hover:bg-[#15919B]/80 transition-all">
+            📩 Разговор с <strong>{{ other.username }}</strong>
+            <span class="block text-sm text-gray-300 mt-1">Създаден на {{ chat.created_at|date:"d.m.Y H:i" }}</span>
+          </a>
+        </li>
+      {% endwith %}
+    {% empty %}
+      <li class="text-gray-400">Нямаш активни разговори.</li>
+    {% endfor %}
+  </ul>
+
+</body>
+</html>
