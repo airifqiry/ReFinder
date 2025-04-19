@@ -49,6 +49,11 @@ class LoginForm(forms.Form):
 
 
 
+class ImageSearchForm(forms.Form):
+    image = forms.ImageField(label="Качи снимка")
+
+
+
 
 
 class AdForm(forms.ModelForm):

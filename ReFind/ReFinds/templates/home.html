@@ -15,13 +15,16 @@
   <nav>
     <div class="logo">
       <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo">
-      <span>refinder</span>
+      <span>ReFinder</span>
     </div>
     <div class="nav-links">
       <a href="#">Начало</a>
+      <a href="{% url 'chat_list' %}">Чатове</a>
       <a href="{% url 'listing' %}">Добави</a>
-      <a href="{% url 'ad_list' %}">Търси</a>
-      <a href="{% url 'index' %}">Изход</a>
+      <a href="{% url 'ad_list' %}">Обяви</a>
+      <a href="#">Сравнение</a>
+      <a href="{% url 'logout' %}">Изход</a>
+
     </div>
   </nav>
 

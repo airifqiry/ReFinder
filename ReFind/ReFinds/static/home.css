@@ -21,9 +21,9 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 40px;
-  background-color: var(--c5);
-  backdrop-filter: blur(10px);
+  padding: 16px 24px;
+  background-color: var(--c5); /* #0C6478 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -36,30 +36,34 @@ nav .logo {
 }
 
 nav .logo img {
-  height: 36px;
+  height: 40px;
 }
 
 nav .logo span {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--c1);
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--c1); /* #80EE98 */
 }
 
 .nav-links {
   display: flex;
   gap: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text); /* text-white */
 }
 
 .nav-links a {
   color: var(--text);
   text-decoration: none;
   transition: color 0.3s;
-  font-weight: 500;
 }
 
 .nav-links a:hover {
   color: var(--c1);
 }
+
+
 
 header {
   text-align: center;

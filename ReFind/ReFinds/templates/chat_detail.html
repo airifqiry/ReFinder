@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>Чат – ReFinder</title>
   <script src="https://cdn.tailwindcss.com"></script>
+<<<<<<< HEAD
   <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1"></script>
   <style>
     html { scroll-behavior: smooth; }
@@ -13,11 +14,17 @@
       bottom: 60px;
       right: 20px;
       z-index: 50;
+=======
+  <style>
+    .chat-bubble {
+      max-width: 70%;
+>>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
     }
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#213A58] via-[#0C6478] to-[#09D1C7] text-white min-h-screen flex flex-col">
 
+<<<<<<< HEAD
   <!-- Header -->
   <header class="bg-[#15919B] p-4 shadow-md flex justify-between items-center sticky top-0 z-10 rounded-b-xl">
     <div class="flex items-center gap-3">
@@ -52,11 +59,35 @@
               {{ emoji }} {{ count }}
             {% endfor %}
           </div>
+=======
+  <!-- Навигация / Заглавие -->
+  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ other_user.username }}</h1>
+    <a href="{% url 'chat_list' %}" class="text-sm text-white hover:text-[#80EE98]">← Назад</a>
+  </header>
+
+  <!-- Съобщения -->
+  <div id="chat-box" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#1b2c48]">
+
+    {% for msg in messages %}
+      <div class="flex {% if msg.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+        <div class="chat-bubble px-4 py-2 rounded-2xl shadow
+          {% if msg.sender == request.user %}
+            bg-[#80EE98] text-[#213A58] rounded-br-none
+          {% else %}
+            bg-[#0C6478] text-white rounded-bl-none
+          {% endif %}
+        ">
+          <p class="text-sm break-words">{{ msg.text }}</p>
+          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
+>>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
         </div>
       </div>
     {% endfor %}
+
   </div>
 
+<<<<<<< HEAD
   <!-- Input Area -->
   <form id="chat-form" enctype="multipart/form-data" class="p-4 bg-[#0C6478] flex flex-col sm:flex-row gap-3 items-start sm:items-center sticky bottom-0 z-10 shadow-inner">
     {% csrf_token %}
@@ -165,6 +196,23 @@
     });
 
     window.onload = () => chatBox.scrollTop = chatBox.scrollHeight;
+=======
+  <!-- Форма за съобщение -->
+  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-2">
+    {% csrf_token %}
+    <input type="text" name="text" placeholder="Напиши съобщение..." required
+           class="flex-1 px-4 py-2 rounded-xl text-[#213A58] focus:outline-none focus:ring-2 focus:ring-[#80EE98]">
+    <button type="submit"
+            class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1] transition">
+      📤
+    </button>
+  </form>
+
+  <!-- Автоскрол до дъното -->
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+>>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
   </script>
 
 </body>

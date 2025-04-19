@@ -61,13 +61,23 @@ def login_view(request):
 
 def ad_list_view(request):
     query = request.GET.get('q')
+    status = request.GET.get('status')
+
     ads = Ad.objects.all()
 
     if query:
         ads = ads.filter(title__icontains=query)
 
+    if status:
+        ads = ads.filter(status=status)
+
     ads = ads.order_by('-created_at')
-    return render(request, 'ads_list.html', {'ads': ads, 'query': query})
+    return render(request, 'ads_list.html', {
+        'ads': ads,
+        'query': query,
+        'selected_status': status  # 👉 за да пазим избора в HTML
+    })
+
 
 
 def ad_detail_view(request, ad_id):
