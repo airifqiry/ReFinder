@@ -1,32 +1,23 @@
 from django.core.management.base import BaseCommand
 from ReFinds.models import Ad
-import replicate
-import os
+from ReFinds.uttils import get_image_embedding
 import json
-from dotenv import load_dotenv
-
-load_dotenv()  # зареждаме .env файла
 
 class Command(BaseCommand):
-    help = 'Генерира embedding-и за всички обяви без такива'
+    help = 'Генерира embedding-и за обяви без embedding'
 
     def handle(self, *args, **kwargs):
-        print("🔐 Replicate API ключ:", os.getenv("REPLICATE_API_TOKEN"))  # За проверка
-
-        # 👉 Използваме работещ модел
-        model = replicate.models.get("kakaobrain/clip-vit-base-patch32")
-
-        ads = Ad.objects.filter(embedding__isnull=True, image__isnull=False)
+        ads = Ad.objects.filter(embedding__isnull=True).exclude(image='')
 
         if not ads.exists():
-            self.stdout.write(self.style.SUCCESS("✅ Всички обяви вече имат embedding."))
+            self.stdout.write("✅ Всички обяви имат embedding.")
             return
 
         for ad in ads:
             try:
                 print(f"🔄 Генерирам embedding за: {ad.title}")
-                ad_embedding = model.predict(image=ad.image.file)
-                ad.embedding = json.dumps(ad_embedding)
+                embedding = get_image_embedding(ad.image.path)
+                ad.embedding = json.dumps(embedding)
                 ad.save()
                 print(f"✅ Успешно за {ad.title}")
             except Exception as e:
