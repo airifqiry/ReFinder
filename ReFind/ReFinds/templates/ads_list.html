@@ -31,12 +31,10 @@
 
     <form method="GET" class="flex gap-2">
       <input type="text" name="q" placeholder="🔍 Търси по заглавие..." class="px-4 py-2 rounded-xl bg-white text-black placeholder-gray-500 w-64">
-        <select name="status" class="px-3 py-2 rounded-xl bg-white text-black">
-          <option value="" {% if not selected_status %}selected{% endif %}>Всички</option>
-          <option value="lost" {% if selected_status == "lost" %}selected{% endif %}>Изгубени</option>
-          <option value="found" {% if selected_status == "found" %}selected{% endif %}>Намерени</option>
-        
-        
+      <select name="status" class="px-3 py-2 rounded-xl bg-white text-black">
+        <option value="">Всички</option>
+        <option value="lost">Изгубени</option>
+        <option value="found">Намерени</option>
       </select>
       <button type="submit" class="bg-[#80EE98] text-[#213A58] px-4 py-2 rounded-xl font-bold hover:bg-[#5ee180] transition">Филтрирай</button>
     </form>

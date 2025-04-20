@@ -6,48 +6,47 @@
   <title>Чат – ReFinder</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .chat-bubble {
-      max-width: 70%;
+    html {
+      scroll-behavior: smooth;
     }
   </style>
 </head>
 <body class="bg-[#213A58] text-white min-h-screen flex flex-col">
 
   <!-- Навигация / Заглавие -->
-  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-[#80EE98]">💬 Чат с {{ other_user.username }}</h1>
-    <a href="{% url 'chat_list' %}" class="text-sm text-white hover:text-[#80EE98]">← Назад</a>
+  <header class="bg-[#0C6478] p-4 shadow-md flex justify-between items-center sticky top-0 z-10">
+    <h1 class="text-xl md:text-2xl font-bold text-[#80EE98]">💬 Разговор с {{ other_user.username }}</h1>
+    <a href="{% url 'chat_list' %}" class="text-sm md:text-base text-white hover:text-[#80EE98]">← Назад</a>
   </header>
 
   <!-- Съобщения -->
-  <div id="chat-box" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#1b2c48]">
+  <div id="chat-box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 bg-[#1b2c48] space-y-4">
 
     {% for msg in messages %}
       <div class="flex {% if msg.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
-        <div class="chat-bubble px-4 py-2 rounded-2xl shadow
+        <div class="max-w-[80%] sm:max-w-[60%] px-4 py-3 rounded-3xl shadow-md 
           {% if msg.sender == request.user %}
-            bg-[#80EE98] text-[#213A58] rounded-br-none
+            bg-[#80EE98] text-[#213A58] rounded-br-sm
           {% else %}
-            bg-[#0C6478] text-white rounded-bl-none
-          {% endif %}
-        ">
-          <p class="text-sm break-words">{{ msg.text }}</p>
-          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i d.m.Y" }}</p>
+            bg-[#0C6478] text-white rounded-bl-sm
+          {% endif %}">
+          <p class="text-sm break-words whitespace-pre-line">{{ msg.text }}</p>
+          <p class="text-xs mt-1 text-right text-gray-300">{{ msg.timestamp|date:"H:i, d.m.Y" }}</p>
         </div>
       </div>
     {% empty %}
-      <p class="text-center text-gray-400">Няма съобщения.</p>
+      <p class="text-center text-gray-400 italic">Няма съобщения.</p>
     {% endfor %}
 
   </div>
 
   <!-- Форма за съобщение -->
-  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-2">
+  <form method="POST" action="{% url 'send_message' chat.id %}" class="p-4 bg-[#0C6478] flex gap-3 items-center sticky bottom-0 z-10">
     {% csrf_token %}
     <input type="text" name="text" placeholder="Напиши съобщение..." required
-           class="flex-1 px-4 py-2 rounded-xl text-[#213A58] focus:outline-none focus:ring-2 focus:ring-[#80EE98]">
+           class="flex-1 px-4 py-2 rounded-2xl text-[#213A58] bg-white focus:outline-none focus:ring-2 focus:ring-[#80EE98] placeholder:text-gray-400">
     <button type="submit"
-            class="bg-[#80EE98] px-4 py-2 rounded-xl text-[#213A58] font-bold hover:bg-[#46DFB1] transition">
+            class="bg-[#80EE98] px-5 py-2 rounded-2xl text-[#213A58] font-bold text-lg hover:bg-[#46DFB1] transition-all duration-200">
       📤
     </button>
   </form>
