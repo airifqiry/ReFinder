@@ -19,7 +19,11 @@ def get_image_embedding(image_path):
 
 
 def cosine_similarity(v1, v2):
+    v1 = np.array(v1)
+    v2 = np.array(v2)
 
-    v1 = np.array(v1).reshape(1, -1)
-    v2 = np.array(v2).reshape(1, -1)
-    return float(skl_cosine_similarity(v1, v2)[0][0])
+    if np.linalg.norm(v1) == 0 or np.linalg.norm(v2) == 0:
+        return 0.0
+
+    similarity = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    return float(np.clip(similarity, 0.0, 1.0))  

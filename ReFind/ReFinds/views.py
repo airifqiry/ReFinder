@@ -160,28 +160,56 @@ def chat_list(request):
     return render(request, 'chat_list.html', {'chat_data': chat_data})
 
 # === Изображение → embedding сравнение ===
+
 def image_search_view(request):
     results = []
+
     if request.method == 'POST':
         form = ImageSearchForm(request.POST, request.FILES)
         if form.is_valid():
             image_file = request.FILES['image']
             path = default_storage.save('temp_search.jpg', image_file)
             full_path = default_storage.path(path)
+
             try:
                 uploaded_embedding = get_image_embedding(full_path)
                 scored_ads = []
-                for ad in Ad.objects.exclude(embedding__isnull=True):
+
+                for ad in Ad.objects.all():
+                    # 🔄 Генерираме embedding при нужда
+                    if not ad.embedding and ad.image:
+                        try:
+                            emb = get_image_embedding(ad.image.path)
+                            ad.embedding = json.dumps(emb)
+                            ad.save()
+                        except Exception as e:
+                            print(f"❌ Неуспешен embedding за обява '{ad.title}': {e}")
+                            continue
+
+                    if not ad.embedding:
+                        continue  # ⛔️ пропускаме ако embedding липсва
+
                     try:
                         ad_embedding = json.loads(ad.embedding)
                         score = cosine_similarity(uploaded_embedding, ad_embedding)
-                        scored_ads.append((score, ad))
+                        similarity_percent = round(score * 100, 2)
+
+                        scored_ads.append({
+                            'ad': ad,
+                            'similarity': similarity_percent
+                        })
                     except Exception as e:
                         print(f"⚠️ Проблем с обява ID {ad.id}: {e}")
-                scored_ads.sort(reverse=True, key=lambda x: x[0])
-                results = [ad for score, ad in scored_ads[:6]]
+
+                scored_ads.sort(key=lambda x: x['similarity'], reverse=True)
+                results = scored_ads[:6]
+
             except Exception as e:
-                print(f"❌ Грешка при embedding: {e}")
+                print(f"❌ Грешка при embedding на каченото изображение: {e}")
     else:
         form = ImageSearchForm()
-    return render(request, 'image_search.html', {'form': form, 'results': results})
+
+    return render(request, 'image_search.html', {
+        'form': form,
+        'results': results
+    })

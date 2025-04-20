@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import json
+from geopy.geocoders import Nominatim
+
 
 class Ad(models.Model):
     STATUS_CHOICES = [
@@ -21,6 +22,20 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if (not self.latitude or not self.longitude) and self.location:
+            try:
+                geolocator = Nominatim(user_agent="refinder")
+                location_data = geolocator.geocode(self.location)
+                if location_data:
+                    self.latitude = location_data.latitude
+                    self.longitude = location_data.longitude
+            except Exception as e:
+                print(f"❌ Грешка при геокодиране: {e}")
+
+        super().save(*args, **kwargs)
+
 
 
 class Chat(models.Model):

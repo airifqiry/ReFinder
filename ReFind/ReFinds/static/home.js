@@ -3,14 +3,19 @@ AOS.init();
 document.addEventListener("DOMContentLoaded", function () {
   console.log("📦 DOM напълно зареден");
 
-
-
-
   // КАРТАТА
   const map = L.map('map').setView([42.6977, 23.3219], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
+
+  // СИВ МАРКЕР ЗА НЕИЗВЕСТНА ЛОКАЦИЯ
+  const grayIcon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // сив маркер
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
 
   // ТЕСТОВИ ОБЯВИ
   const items = [
@@ -22,6 +27,39 @@ document.addEventListener("DOMContentLoaded", function () {
     L.marker(item.coords).addTo(map)
       .bindPopup(`<b>${item.name}</b>`);
   });
+
+  // 🔄 Динамични обяви от бекенда
+  fetch('/ads-json/')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(ad => {
+        let lat = ad.latitude;
+        let lng = ad.longitude;
+
+        let popupContent = `
+          <b>${ad.title}</b><br>
+          ${ad.description}<br>
+          ${ad.image ? `<img src="${ad.image}" width="100">` : ''}
+          <br><em>${ad.location}</em>
+        `;
+
+        let options = {};  // за избиране на иконка
+
+        if (!lat || !lng) {
+          // резервна позиция (София)
+          lat = 42.6977;
+          lng = 23.3219;
+          options.icon = grayIcon;
+          popupContent += "<br><span style='color:gray'>⚠️ Местоположението е приблизително</span>";
+        }
+
+        const marker = L.marker([lat, lng], options).addTo(map);
+        marker.bindPopup(popupContent);
+      });
+    })
+    .catch(err => {
+      console.error("❌ Грешка при зареждане на обявите:", err);
+    });
 
   // ГЕОЛОКАЦИЯ
   if (navigator.geolocation) {
@@ -51,18 +89,3 @@ document.addEventListener("DOMContentLoaded", function () {
     alert("❗ Браузърът не поддържа геолокация.");
   }
 });
-
-
-  fetch('/ads-json/')
-    .then(response => response.json())
-    .then(data => {
-      data.forEach(ad => {
-        const marker = L.marker([ad.latitude, ad.longitude]).addTo(map);
-        marker.bindPopup(`
-          <b>${ad.title}</b><br>
-          ${ad.description}<br>
-          ${ad.image ? `<img src="${ad.image}" width="100">` : ''}
-        `);
-      });
-    });
-
