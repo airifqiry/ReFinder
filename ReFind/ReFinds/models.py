@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from geopy.geocoders import Nominatim
+from .uttils import get_image_embedding
+import json
 
 class Ad(models.Model):
     STATUS_CHOICES = [
@@ -23,17 +25,12 @@ class Ad(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if (not self.latitude or not self.longitude) and self.location:
-            try:
-                geolocator = Nominatim(user_agent="refinder")
-                location_data = geolocator.geocode(self.location)
-                if location_data:
-                    self.latitude = location_data.latitude
-                    self.longitude = location_data.longitude
-            except Exception as e:
-                print(f"❌ Грешка при геокодиране: {e}")
+        if not self.embedding and self.image:
+            # Generate the embedding if it doesn't exist
+            embedding = get_image_embedding(self.image.path)  # Assuming self.image.path returns the image path
+            self.embedding = json.dumps(embedding)  # Save the embedding as a JSON string
 
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs)  # Call the parent class's save method
 
 
 
