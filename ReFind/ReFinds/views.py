@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt
+import uuid
 from .forms import LoginForm, RegisterForm, AdForm, ImageSearchForm
 from .models import Ad, Chat, Message
 from .uttils import get_image_embedding, cosine_similarity
@@ -159,7 +160,6 @@ def chat_list(request):
     ]
     return render(request, 'chat_list.html', {'chat_data': chat_data})
 
-# === Изображение → embedding сравнение ===
 
 def image_search_view(request):
     results = []
@@ -173,24 +173,35 @@ def image_search_view(request):
 
             try:
                 uploaded_embedding = get_image_embedding(full_path)
+                if all(v == 0.0 for v in uploaded_embedding):
+                    print("⚠️ Uploaded image resulted in zero embedding — possibly failed to process the image.")
+                    return render(request, 'image_search.html', {
+                        'form': form,
+                        'results': [],
+                        'error': 'Image could not be processed. Please try a different one.'
+                    })
+
                 scored_ads = []
 
                 for ad in Ad.objects.all():
-                    # 🔄 Генерираме embedding при нужда
-                    if not ad.embedding and ad.image:
-                        try:
+                    try:
+                        # Generate embedding if missing
+                        if not ad.embedding and ad.image:
                             emb = get_image_embedding(ad.image.path)
                             ad.embedding = json.dumps(emb)
                             ad.save()
-                        except Exception as e:
-                            print(f"❌ Неуспешен embedding за обява '{ad.title}': {e}")
+                            print(f"🧠 Embedding generated and saved for '{ad.title}'")
+
+                        if not ad.embedding:
+                            continue  # Skip if still no embedding
+
+                        ad_embedding = json.loads(ad.embedding)
+
+                        # Skip if embedding is invalid (e.g. all zeros)
+                        if not isinstance(ad_embedding, list) or all(v == 0.0 for v in ad_embedding):
+                            print(f"⚠️ Invalid or zero embedding for ad ID {ad.id}")
                             continue
 
-                    if not ad.embedding:
-                        continue  # ⛔️ пропускаме ако embedding липсва
-
-                    try:
-                        ad_embedding = json.loads(ad.embedding)
                         score = cosine_similarity(uploaded_embedding, ad_embedding)
                         similarity_percent = round(score * 100, 2)
 
@@ -198,14 +209,16 @@ def image_search_view(request):
                             'ad': ad,
                             'similarity': similarity_percent
                         })
+
                     except Exception as e:
-                        print(f"⚠️ Проблем с обява ID {ad.id}: {e}")
+                        print(f"⚠️ Error processing ad '{ad.title}' (ID {ad.id}): {e}")
+                        continue
 
                 scored_ads.sort(key=lambda x: x['similarity'], reverse=True)
                 results = scored_ads[:6]
 
             except Exception as e:
-                print(f"❌ Грешка при embedding на каченото изображение: {e}")
+                print(f"❌ Error processing uploaded image: {e}")
     else:
         form = ImageSearchForm()
 
@@ -214,21 +227,9 @@ def image_search_view(request):
         'results': results
     })
 
-from django.shortcuts import render, redirect,get_object_or_404
-from django.contrib.auth import login,authenticate,logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import LoginForm,RegisterForm,AdForm
-from .models import Ad,Chat,Message
-from django.http import JsonResponse
-import requests
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
-import uuid
 
 
+<<<<<<< HEAD
 def index_view(request):
     return render(request,'index.html')
 
@@ -451,6 +452,8 @@ def chat_list(request):
         })
 
     return render(request, 'chat_list.html', {'chat_data': chat_data})
+=======
+>>>>>>> 2ad4e92da6f09cac7910b52bca1014c27e00d726
 
 
 @csrf_exempt
