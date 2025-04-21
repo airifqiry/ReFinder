@@ -63,9 +63,6 @@ def ad_list_view(request):
         ads = ads.filter(status=status)
     return render(request, 'ads_list.html', {'ads': ads.order_by('-created_at'), 'query': query, 'selected_status': status})
 
-def ad_detail_view(request, ad_id):
-    ad = get_object_or_404(Ad, id=ad_id)
-    return render(request, 'ad_detail.html', {'ad': ad})
 
 def get_location_name(lat, lng):
     try:
@@ -123,42 +120,6 @@ def ad_list_json(request):
     ]
     return JsonResponse(data, safe=False)
 
-# === Чат ===
-@login_required
-def start_chat(request, user_id):
-    other_user = get_object_or_404(User, id=user_id)
-    chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
-    if not chat:
-        chat = Chat.objects.create()
-        chat.participants.add(request.user, other_user)
-    return redirect('chat_detail', chat_id=chat.id)
-
-@login_required
-def chat_detail(request, chat_id):
-    chat = get_object_or_404(Chat, id=chat_id)
-    if request.user not in chat.participants.all():
-        return redirect('home')
-    messages_qs = Message.objects.filter(chat=chat).order_by('timestamp')
-    other_user = chat.participants.exclude(id=request.user.id).first()
-    return render(request, 'chat_detail.html', {'chat': chat, 'messages': messages_qs, 'other_user': other_user})
-
-@login_required
-def send_message(request, chat_id):
-    if request.method == 'POST':
-        chat = get_object_or_404(Chat, id=chat_id)
-        text = request.POST.get('text')
-        if text:
-            Message.objects.create(chat=chat, sender=request.user, text=text)
-    return redirect('chat_detail', chat_id=chat_id)
-
-@login_required
-def chat_list(request):
-    chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
-    chat_data = [
-        {'chat': chat, 'other_user': chat.participants.exclude(id=request.user.id).first()}
-        for chat in chats
-    ]
-    return render(request, 'chat_list.html', {'chat_data': chat_data})
 
 
 def image_search_view(request):
@@ -229,72 +190,6 @@ def image_search_view(request):
 
 
 
-<<<<<<< HEAD
-def index_view(request):
-    return render(request,'index.html')
-
-
-def home_view(request):
-    return render(request, 'home.html')
-@login_required 
-def user_logout(request):
-    logout(request)
-    return redirect('index')
-
-
-def register_view(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Регистрацията беше успешна! Моля, влез в профила си.')
-            return redirect('login')  
-    else:
-        form = RegisterForm()
-    
-    return render(request, 'register.html', {'form': form})
-
-
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home') 
-            else:
-                messages.error(request, 'Невалидно потребителско име или парола.')
-    else:
-        form = LoginForm()
-
-    return render(request, 'login.html', {'form': form})
-
-
-
-
-def ad_list_view(request):
-    query = request.GET.get('q')
-    status = request.GET.get('status')
-
-    ads = Ad.objects.all()
-
-    if query:
-        ads = ads.filter(title__icontains=query)
-
-    if status:
-        ads = ads.filter(status=status)
-
-    ads = ads.order_by('-created_at')
-    return render(request, 'ads_list.html', {
-        'ads': ads,
-        'query': query,
-        'selected_status': status  # 👉 за да пазим избора в HTML
-    })
-
 
 
 def ad_detail_view(request, ad_id):
@@ -303,7 +198,7 @@ def ad_detail_view(request, ad_id):
 
 
 
-def add_ad(request):
+#def add_ad(request):
     if request.method == 'POST':
         form = AdForm(request.POST, request.FILES)
         if form.is_valid():
@@ -327,7 +222,7 @@ def add_ad(request):
         form = AdForm()
     return render(request, 'listing.html', {'form': form})
 
-# views.py
+
 def add_ad(request):
     if request.method == 'POST':
         form = AdForm(request.POST, request.FILES)
@@ -386,18 +281,6 @@ def ad_list_json(request):
 
 
 
-def get_location_name(lat, lng):
-    try:
-        url = f'https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}&zoom=16&addressdetails=1'
-        headers = {'User-Agent': 'refinder-app'}
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            data = response.json()
-            return data.get('display_name', '')
-        return ''
-    except:
-        return ''
-
 
 @login_required
 def start_chat(request, user_id):
@@ -452,8 +335,6 @@ def chat_list(request):
         })
 
     return render(request, 'chat_list.html', {'chat_data': chat_data})
-=======
->>>>>>> 2ad4e92da6f09cac7910b52bca1014c27e00d726
 
 
 @csrf_exempt
