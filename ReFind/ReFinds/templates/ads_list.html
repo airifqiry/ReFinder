@@ -20,7 +20,7 @@
       <a href="{% url 'chat_list' %}" class="hover:text-[#80EE98]">Чатове</a>
       <a href="{% url 'listing' %}" class="hover:text-[#80EE98]">Добави</a>
       <a href="{% url 'ad_list' %}" class="hover:text-[#80EE98]">Обяви</a>
-      <a href="#" class="hover:text-[#80EE98]" >Сравнение</a>
+      <a href="{% url 'image_search' %}" class="hover:text-[#80EE98]" >Сравнение</a>
       <a href="{% url 'logout' %}" class="hover:text-[#80EE98]">Изход</a>
     </div>
   </nav>
@@ -31,19 +31,10 @@
 
     <form method="GET" class="flex gap-2">
       <input type="text" name="q" placeholder="🔍 Търси по заглавие..." class="px-4 py-2 rounded-xl bg-white text-black placeholder-gray-500 w-64">
-<<<<<<< HEAD
       <select name="status" class="px-3 py-2 rounded-xl bg-white text-black">
         <option value="">Всички</option>
         <option value="lost">Изгубени</option>
         <option value="found">Намерени</option>
-=======
-        <select name="status" class="px-3 py-2 rounded-xl bg-white text-black">
-          <option value="" {% if not selected_status %}selected{% endif %}>Всички</option>
-          <option value="lost" {% if selected_status == "lost" %}selected{% endif %}>Изгубени</option>
-          <option value="found" {% if selected_status == "found" %}selected{% endif %}>Намерени</option>
-        
-        
->>>>>>> 031e755308617e251d6cd7c95bf073c61848a929
       </select>
       <button type="submit" class="bg-[#80EE98] text-[#213A58] px-4 py-2 rounded-xl font-bold hover:bg-[#5ee180] transition">Филтрирай</button>
     </form>

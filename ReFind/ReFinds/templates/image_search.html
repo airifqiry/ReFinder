@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Снимково търсене – ReFinder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #213A58, #80EE98);
+    }
+    #preview-image {
+      display: none;
+      max-height: 250px;
+      border-radius: 12px;
+      margin-top: 1rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    }
+    .drop-hover {
+      background-color: rgba(22, 163, 133, 0.2);
+      border-color: #80EE98;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+  <!-- Навигация -->
+  <nav class="flex justify-between items-center px-10 py-4 bg-[#0C6478] shadow-md sticky top-0 z-10 rounded-b-xl">
+    <div class="flex items-center gap-3">
+      <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo" class="h-10">
+      <span class="text-2xl font-bold text-[#80EE98]">ReFinder</span>
+    </div>
+    <div class="space-x-6 text-sm font-semibold">
+      <a href="{% url 'home' %}" class="hover:text-[#80EE98]">Начало</a>
+      <a href="{% url 'chat_list' %}" class="hover:text-[#80EE98]">Чатове</a>
+      <a href="{% url 'listing' %}" class="hover:text-[#80EE98]">Добави</a>
+      <a href="{% url 'ad_list' %}" class="hover:text-[#80EE98]">Обяви</a>
+      <a href="{% url 'image_search' %}" class="hover:text-[#80EE98]">Сравнение</a>
+      <a href="{% url 'logout' %}" class="hover:text-[#80EE98]">Изход</a>
+    </div>
+  </nav>
+
+  <!-- Основна част -->
+  <main class="flex-grow px-6 py-10 flex flex-col items-center">
+    <h1 class="text-4xl font-bold text-[#80EE98] mb-10 drop-shadow text-center">🔍 Снимково търсене в ReFinder</h1>
+
+    <!-- Форма -->
+    <form method="POST" enctype="multipart/form-data" class="w-full max-w-xl bg-[#0C6478]/80 p-8 rounded-2xl shadow-2xl space-y-6 backdrop-blur-md">
+      {% csrf_token %}
+      <div id="drop-area" class="cursor-pointer w-full border-2 border-dashed border-[#46DFB1] rounded-xl p-6 flex flex-col items-center justify-center transition duration-300 hover:bg-[#15919B]/20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#80EE98] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h4m-4 0a2 2 0 104 0m-4 0a2 2 0 11-4 0m4 0H8" />
+        </svg>
+        <p class="text-[#80EE98] font-semibold">Кликни или пусни снимка тук</p>
+        <span class="text-sm text-gray-200 mt-1">(.jpg, .png, max 5MB)</span>
+        <input type="file" name="image" id="image-input" accept="image/*" class="hidden">
+      </div>
+      <img id="preview-image" src="#" alt="Преглед на изображението">
+      <button type="submit" class="w-full bg-[#80EE98] text-[#213A58] font-bold py-3 rounded-xl hover:bg-[#46DFB1] transition duration-300">
+        🔎 Намери подобни обяви
+      </button>
+    </form>
+
+    <!-- Резултати -->
+    {% if results %}
+      <h2 class="text-2xl font-semibold text-[#80EE98] mt-14 mb-6">🎯 Най-сходни обяви:</h2>
+      <div class="flex flex-col gap-6 w-full max-w-2xl">
+        {% for result in results %}
+          <div class="bg-[#0C6478] p-4 rounded-xl shadow-lg transition-transform hover:scale-105 duration-300">
+            <a href="{% url 'ad_detail' result.ad.id %}" class="block hover:scale-[1.02] transition duration-200">
+              <img src="{{ result.ad.image.url }}" alt="{{ result.ad.title }}" class="w-full h-48 object-cover rounded-lg mb-3">
+              <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-[#80EE98]">{{ result.ad.title }}</h3>
+                <span class="text-sm font-semibold text-[#46DFB1]">🔁 {{ result.similarity }}%</span>
+              </div>
+              <p class="text-sm text-gray-200 mt-1">{{ result.ad.description|truncatewords:20 }}</p>
+            </a>
+            
+          </div>
+        {% endfor %}
+      </div>
+    {% elif form.is_bound %}
+      <p class="text-center mt-10 text-red-400 text-lg font-semibold">❗ Няма намерени сходни обяви или се случи грешка.</p>
+    {% endif %}
+  </main>
+
+  <!-- JS за преглед на снимката -->
+  <script>
+    const input = document.getElementById('image-input');
+    const dropArea = document.getElementById('drop-area');
+    const preview = document.getElementById('preview-image');
+
+    dropArea.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(evt =>
+      dropArea.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.add('drop-hover');
+      })
+    );
+
+    ['dragleave', 'drop'].forEach(evt =>
+      dropArea.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.remove('drop-hover');
+      })
+    );
+
+    dropArea.addEventListener('drop', e => {
+      input.files = e.dataTransfer.files;
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
