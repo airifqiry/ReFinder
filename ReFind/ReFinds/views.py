@@ -229,7 +229,6 @@ def image_search_view(request):
 
 
 
-<<<<<<< HEAD
 def index_view(request):
     return render(request,'index.html')
 
@@ -452,8 +451,6 @@ def chat_list(request):
         })
 
     return render(request, 'chat_list.html', {'chat_data': chat_data})
-=======
->>>>>>> 2ad4e92da6f09cac7910b52bca1014c27e00d726
 
 
 @csrf_exempt
