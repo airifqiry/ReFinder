@@ -13,9 +13,9 @@ class Ad(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='lost')
     image = models.ImageField(upload_to='ads_images/', blank=True, null=True)
     embedding = models.TextField(blank=True, null=True)  # JSON-сериализирана листа от числа
-    location = models.CharField(max_length=100, blank=True)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
+    location = models.CharField(max_length=225, blank=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

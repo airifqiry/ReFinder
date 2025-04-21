@@ -1,0 +1,111 @@
+:root {
+    --green: #80EE98;
+    --teal: #46DFB1;
+    --cyan: #09D1C7;
+    --blue: #15919B;
+    --darkblue: #213A58;
+    --text: #e8f4f9;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, var(--darkblue), var(--green));
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+  }
+  
+  .container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 420px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--green);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрира по хоризонтала */
+    justify-content: center;
+  }
+  
+  form input,
+  form button {
+    width: 100%;
+    max-width: 300px;
+    text-align: left; /* ако искаш текстът в полетата да е вляво */
+  }
+  
+  
+  input {
+    padding: 12px 16px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+    font-size: 1rem;
+    transition: transform 0.2s ease, background 0.3s ease;
+  }
+  
+  input:focus {
+    transform: scale(1.03);
+    background: rgba(255,255,255,0.2);
+    outline: none;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: var(--cyan);
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background: var(--green);
+  }
+  
+  .toggle {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text);
+  }
+  
+  .toggle a {
+    color: var(--teal);
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .success {
+    background-color: var(--green);
+    color: black;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  

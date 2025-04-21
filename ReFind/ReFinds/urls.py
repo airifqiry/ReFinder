@@ -18,8 +18,6 @@ urlpatterns = [
     path('chat/send/<int:chat_id>/', views.send_message, name='send_message'),
     path('chat/', views.chat_list, name='chat_list'),
     path('image-search/', views.image_search_view, name='image_search'),
-
-
     path('upload-image/', chat_views.upload_image, name='upload_image'),
 ]
 

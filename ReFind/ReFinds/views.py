@@ -326,7 +326,40 @@ def add_ad(request):
         form = AdForm()
     return render(request, 'listing.html', {'form': form})
 
+# views.py
+def add_ad(request):
+    if request.method == 'POST':
+        form = AdForm(request.POST, request.FILES)
+        if form.is_valid():
+            ad = form.save(commit=False)
+            ad.user = request.user
+            lat = form.cleaned_data.get('latitude')
+            lng = form.cleaned_data.get('longitude')
+            
+            # Проверка за задължителни координати
+            if not lat or not lng:
+                messages.error(request, "Моля, изберете място на картата или използвайте автоматично местоположение.")
+                return render(request, 'listing.html', {'form': form})
 
+            ad.latitude = float(lat)
+            ad.longitude = float(lng)
+            ad.location = get_location_name(lat, lng)
+
+            if ad.image:
+                try:
+                    ad.embedding = json.dumps(get_image_embedding(ad.image.path))
+                except Exception as e:
+                    print(f"❌ Грешка при embedding: {e}")
+
+            ad.save()
+            messages.success(request, "Обявата беше добавена успешно!")
+            return redirect('home')
+        else:
+            print("❌ Формата невалидна:", form.errors)
+            messages.error(request, "Моля, попълнете всички задължителни полета.")
+    else:
+        form = AdForm()
+    return render(request, 'listing.html', {'form': form})
 
 
 def ad_list_json(request):
