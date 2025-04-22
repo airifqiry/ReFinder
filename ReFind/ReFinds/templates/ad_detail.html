@@ -14,6 +14,52 @@
     .fade-in {
       animation: fadeIn 0.6s ease-in-out both;
     }
+    .popup-content {
+    background: linear-gradient(135deg, #2E7D32, #00695C);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    .popup-image {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .popup-content h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .popup-content p {
+        margin: 5px 0;
+    }
+
+    .back-button, .edit-button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-top: 10px;
+        border-radius: 25px;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .back-button {
+        background: linear-gradient(135deg, #43A047, #00796B);
+    }
+
+    .edit-button {
+        background: linear-gradient(135deg, #FF8F00, #F4511E);
+        margin-right: 10px;
+    }
+
+    .back-button:hover, .edit-button:hover {
+        opacity: 0.9;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -70,12 +116,50 @@
           </a>
         </div>
       {% endif %}
-
+      {% if edit %} 
+        <div class="mt-10">
+          <a href="{% url 'edit_ad' ad.id %}" class="inline-block bg-[#80EE98] text-[#213A58] font-bold px-6 py-3 rounded-xl hover:bg-[#46DFB1] transition-all shadow-lg">Редактирай</a>
+        </div>
+      {% endif %}
       <div class="mt-10 text-right">
         <a href="{% url 'ad_list' %}" class="text-[#80EE98] underline hover:text-[#46DFB1] transition">⬅ Обратно към всички обяви</a>
       </div>
     </div>
   </main>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var map = L.map('map').setView([42.6977, 23.3219], 13); // Пример: София
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
+    // Зареждане на обявите от Django
+    fetch('/api/posts/')
+        .then(response => response.json())
+        .then(posts => {
+            posts.forEach(post => {
+                var marker = L.marker([post.latitude, post.longitude]).addTo(map);
+                // Временно: потребителят въвежда имейл (по-късно замени с автентикация)
+                var userEmail = prompt("Въведете вашия имейл, за да видите обявите:");
+                var editButton = (userEmail === post.email) 
+                    ? `<a href="/edit_post/${post.id}/" class="edit-button">Редактирай</a>` 
+                    : '';
+                marker.bindPopup(`
+                    <div class="popup-content">
+                        ${post.image ? `<img src="${post.image}" class="popup-image">` : ''}
+                        <h3>${post.title}</h3>
+                        <p>${post.description}</p>
+                        <p><b>Локация:</b> бул. Джавахарлал Неру 1164, София</p>
+                        <p><b>Публикувано:</b> ${post.created_at}</p>
+                        <p><b>Статус:</b> ${post.status === 'lost' ? 'Изгубено' : 'Намерено'}</p>
+                        <p><b>Потребител:</b> ${post.email}</p>
+                        ${editButton}
+                        <a href="/" class="back-button">Обратно към всички обяви</a>
+                    </div>
+                `);
+            });
+        });
+});
+</script>
 </body>
 </html>

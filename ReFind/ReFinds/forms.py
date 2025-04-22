@@ -72,3 +72,4 @@ class AdForm(forms.ModelForm):
         if image and image.size > 5 * 1024 * 1024:
             raise forms.ValidationError("Снимката трябва да е под 5MB.")
         return image
+
