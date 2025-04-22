@@ -1,21 +1,28 @@
 import numpy as np
-from PIL import Image
-from sklearn.metrics.pairwise import cosine_similarity as skl_cosine_similarity
-from pathlib import Path
-import base64
-import io
+from django.conf import settings
+from clarifai.client.model import Model
 
-# === ЛОКАЛНА симулация на embedding генератор ===
+# Задаваме публичния Clarifai модел за embedding
+model = Model(
+    model_id="general-image-embedding",
+    user_id="clarifai",
+    app_id="main",
+    pat=settings.CLARIFAI_PAT
+)
+
 def get_image_embedding(image_path):
-    
     try:
-        img = Image.open(image_path).resize((64, 64)).convert('RGB')
-        img_array = np.array(img)
-        mean_rgb = img_array.mean(axis=(0, 1))  # Среден цвят по всички пиксели
-        return mean_rgb.tolist()  # [R, G, B] стойности
+        with open(image_path, "rb") as f:
+            image_bytes = f.read()
+
+        response = model.predict_by_bytes(image_bytes, input_type="image")
+
+        embedding = response.outputs[0].data.embeddings[0].vector
+        return list(embedding)
+
     except Exception as e:
-        print(f"❌ Грешка при отваряне на изображение: {e}")
-        return [0.0, 0.0, 0.0]  # fallback embedding
+        print(f"❌ Clarifai embedding error: {e}")
+        return [0.0] * 1024
 
 
 def cosine_similarity(v1, v2):
@@ -26,4 +33,4 @@ def cosine_similarity(v1, v2):
         return 0.0
 
     similarity = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-    return float(np.clip(similarity, 0.0, 1.0))  
+    return float(np.clip(similarity, 0.0, 1.0))
