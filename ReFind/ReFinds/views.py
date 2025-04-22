@@ -297,9 +297,15 @@ def ad_list_view(request):
 
 
 def ad_detail_view(request, ad_id):
+    user = request.user.id
     ad = get_object_or_404(Ad, id=ad_id)
-    return render(request, 'ad_detail.html', {'ad': ad})
-
+    ad_user = ad.user.id
+    edit = False
+    if user == ad_user:
+        edit = True
+    else: 
+        edit = False
+    return render(request, 'ad_detail.html', {'ad': ad, 'edit': edit})
 
 
 def add_ad(request):
@@ -461,3 +467,28 @@ def upload_image(request):
         path = default_storage.save(f"chat_images/{filename}", image)
         return JsonResponse({"url": f"{settings.MEDIA_URL}{path}"})
     return JsonResponse({"error": "Невалидна заявка"}, status=400)
+
+
+
+@login_required
+def edit_ad(request, post_id):
+    post = get_object_or_404(Ad, id=post_id)
+    
+    # Check if the user is the creator
+    if request.user != post.user:  # Assuming post.user is a User object
+        messages.error(request, "Можете да редактирате само своите обяви.")
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = AdForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Обявата е обновена успешно!")
+            return redirect('home')
+        else:
+            messages.error(request, "Моля, коригирайте грешките във формата.")
+            print(form.errors)  # Debug validation errors
+    else:
+        form = AdForm(instance=post)
+    
+    return render(request, 'edit_add.html', {'form': form, 'post': post})
