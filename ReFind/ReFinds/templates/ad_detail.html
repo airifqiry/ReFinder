@@ -74,10 +74,12 @@
       <img src="{% static 'logo-removebg-preview.png' %}" alt="ReFinder Logo" class="h-10">
       <span class="text-2xl font-bold text-[#33FBBA]">ReFinder</span>
     </div>
-    <div class="space-x-6 text-sm font-semibold">
+    <div class="space-x-4 text-sm font-semibold">
       <a href="{% url 'home' %}" class="hover:text-[#80EE98]">Начало</a>
+      <a href="{% url 'chat_list' %}" class="hover:text-[#80EE98]">Чатове</a>
       <a href="{% url 'listing' %}" class="hover:text-[#80EE98]">Добави</a>
       <a href="{% url 'ad_list' %}" class="hover:text-[#80EE98]">Обяви</a>
+      <a href="{% url 'image_search' %}" class="hover:text-[#80EE98]" >Сравнение</a>
       <a href="{% url 'logout' %}" class="hover:text-[#80EE98]">Изход</a>
     </div>
   </nav>
