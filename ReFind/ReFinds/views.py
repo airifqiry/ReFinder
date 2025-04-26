@@ -53,15 +53,15 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 # === Обяви ===
-def ad_list_view(request):
-    query = request.GET.get('q')
-    status = request.GET.get('status')
-    ads = Ad.objects.all()
-    if query:
-        ads = ads.filter(title__icontains=query)
-    if status:
-        ads = ads.filter(status=status)
-    return render(request, 'ads_list.html', {'ads': ads.order_by('-created_at'), 'query': query, 'selected_status': status})
+# def ad_list_view(request):
+#     query = request.GET.get('q')
+#     status = request.GET.get('status')
+#     ads = Ad.objects.all()
+#     if query:
+#         ads = ads.filter(title__icontains=query)
+#     if status:
+#         ads = ads.filter(status=status)
+#     return render(request, 'ads_list.html', {'ads': ads.order_by('-created_at'), 'query': query, 'selected_status': status})
 
 def ad_detail_view(request, ad_id):
     ad = get_object_or_404(Ad, id=ad_id)
@@ -104,24 +104,24 @@ def add_ad(request):
     return render(request, 'listing.html', {'form': form})
 
 # === Обяви в JSON формат за картата ===
-def ad_list_json(request):
-    query = request.GET.get('q')
-    ads = Ad.objects.all()
-    if query:
-        ads = ads.filter(title__icontains=query)
-    data = [
-        {
-            'id': ad.id,
-            'title': ad.title,
-            'description': ad.description,
-            'image': ad.image.url if ad.image else '',
-            'latitude': ad.latitude,
-            'longitude': ad.longitude,
-            'location': ad.location,
-        }
-        for ad in ads if ad.latitude and ad.longitude
-    ]
-    return JsonResponse(data, safe=False)
+# def ad_list_json(request):
+#     query = request.GET.get('q')
+#     ads = Ad.objects.all()
+#     if query:
+#         ads = ads.filter(title__icontains=query)
+#     data = [
+#         {
+#             'id': ad.id,
+#             'title': ad.title,
+#             'description': ad.description,
+#             'image': ad.image.url if ad.image else '',
+#             'latitude': ad.latitude,
+#             'longitude': ad.longitude,
+#             'location': ad.location,
+#         }
+#         for ad in ads if ad.latitude and ad.longitude
+#     ]
+#     return JsonResponse(data, safe=False)
 
 # === Чат ===
 @login_required
@@ -235,20 +235,19 @@ def image_search_view(request):
 def ad_list_view(request):
     query = request.GET.get('q')
     status = request.GET.get('status')
-
     ads = Ad.objects.all()
 
     if query:
-        ads = ads.filter(title__icontains=query)
+        query = query.lower()
+        ads = ads.filter(title_lower__icontains=query)
 
     if status:
         ads = ads.filter(status=status)
 
-    ads = ads.order_by('-created_at')
     return render(request, 'ads_list.html', {
-        'ads': ads,
+        'ads': ads.order_by('-created_at'),
         'query': query,
-        'selected_status': status  # 👉 за да пазим избора в HTML
+        'selected_status': status,
     })
 
 
@@ -330,20 +329,22 @@ def ad_list_json(request):
     ads = Ad.objects.all()
 
     if query:
-        ads = ads.filter(title__icontains=query)
+        query = query.lower()
+        ads = ads.filter(title_lower__icontains=query)
 
-    data = []
-    for ad in ads:
-        if ad.latitude and ad.longitude:
-            data.append({
-                'id': ad.id,
-                'title': ad.title,
-                'description': ad.description,
-                'image': ad.image.url if ad.image else '',
-                'latitude': ad.latitude,
-                'longitude': ad.longitude,
-                'location': ad.location,
-            })
+    data = [
+        {
+            'id': ad.id,
+            'title': ad.title,
+            'description': ad.description,
+            'image': ad.image.url if ad.image else '',
+            'latitude': ad.latitude,
+            'longitude': ad.longitude,
+            'location': ad.location,
+        }
+        for ad in ads 
+	    if ad.latitude and ad.longitude
+    ]
     return JsonResponse(data, safe=False)
 
 
