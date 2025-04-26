@@ -11,6 +11,7 @@ class Ad(models.Model):
     ]
 
     title = models.CharField(max_length=100)
+    title_lower = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(max_length=300)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='lost')
     image = models.ImageField(upload_to='ads_images/', blank=True, null=True)
@@ -29,6 +30,7 @@ class Ad(models.Model):
             # Generate the embedding if it doesn't exist
             embedding = get_image_embedding(self.image.path)  # Assuming self.image.path returns the image path
             self.embedding = json.dumps(embedding)  # Save the embedding as a JSON string
+        self.title_lower = self.title.lower()
 
         super().save(*args, **kwargs)  # Call the parent class's save method
 
